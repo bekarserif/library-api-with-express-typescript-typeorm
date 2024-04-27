@@ -29,3 +29,15 @@ describe('GET /api/v1/users/:id', () => {
     expect(response.body.name).toBe('Enes Faruk Meniz');
   });
 });
+
+describe('POST /api/v1/users', () => {
+  it('creates a user', async () => {
+    await request(expressApp)
+      .post('/api/v1/users')
+      .set('Accept', 'application/json')
+      .send({
+        name: 'Serif',
+      })
+      .expect(201);
+  });
+});

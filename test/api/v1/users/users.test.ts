@@ -40,4 +40,18 @@ describe('POST /api/v1/users', () => {
       })
       .expect(201);
   });
+
+  it('responds with 422(Invalid data) if name property is not given within body', async () => {
+    await request(expressApp).post('/api/v1/users').set('Accept', 'application/json').expect(422);
+  });
+
+  it('responds with 422(Invalid data) if name property type is wrong', async () => {
+    await request(expressApp)
+      .post('/api/v1/users')
+      .set('Accept', 'application/json')
+      .send({
+        name: 5,
+      })
+      .expect(422);
+  });
 });

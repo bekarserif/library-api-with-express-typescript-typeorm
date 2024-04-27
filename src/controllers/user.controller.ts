@@ -29,10 +29,8 @@ export async function findUserById(req: Request, res: Response<User | string>) {
 export async function createUser(req: Request<{ name: string }>, res: Response) {
   try {
     const { name } = req.body;
-    if (name) {
-      return res.status(201).send();
-    }
-    throw new Error('Validation Error');
+    await UserService.createUser(name);
+    res.status(201).send();
   } catch (error) {
     res.status(500).send('Internal Server Error');
   }

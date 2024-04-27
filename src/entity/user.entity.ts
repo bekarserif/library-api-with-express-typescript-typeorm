@@ -3,7 +3,7 @@ import 'reflect-metadata';
 
 @Entity()
 export class User {
-  @PrimaryGeneratedColumn('uuid')
+  @PrimaryGeneratedColumn('rowid')
   id: string;
 
   @Column()

@@ -1,10 +1,10 @@
 import { Request, Response } from 'express';
-import UserResponse from '../interfaces/userResponse';
+import { User } from '../entity/user.entity';
 
-export async function findAllUsers(req: Request, res: Response<UserResponse[] | string>) {
+export async function findAllUsers(req: Request, res: Response<User[] | string>) {
   try {
-    const users: UserResponse[] = [];
-    res.status(200).send(users);
+    const users: User[] = [];
+    res.status(200).json(users);
   } catch (error) {
     res.status(500).send('Internal Server Error');
   }

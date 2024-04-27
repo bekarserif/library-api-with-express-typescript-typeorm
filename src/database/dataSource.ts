@@ -20,7 +20,6 @@ const dataSourceOptions: DataSourceOptions & SeederOptions = {
   seeds: [UserSeeder],
   seedTracking: true,
   synchronize: NODE_ENV === 'development',
-  logging: NODE_ENV === 'development',
 };
 
 export const AppDataSource = new DataSource(dataSourceOptions);

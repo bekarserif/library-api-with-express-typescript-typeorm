@@ -11,7 +11,7 @@ describe('GET /api/v1/users', () => {
       .expect(200);
 
     expect(response.body).toHaveProperty('length');
-    expect(response.body.length).toBe(0);
+    expect(response.body.length).toBe(4);
   });
 });
 

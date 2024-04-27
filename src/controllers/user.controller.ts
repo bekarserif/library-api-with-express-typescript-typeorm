@@ -1,9 +1,10 @@
 import { Request, Response } from 'express';
 import { User } from '../entity/user.entity';
+import * as UserService from '../services/user.service';
 
 export async function findAllUsers(req: Request, res: Response<User[] | string>) {
   try {
-    const users: User[] = [];
+    const users: User[] = await UserService.findAllUsers();
     res.status(200).send(users);
   } catch (error) {
     res.status(500).send('Internal Server Error');

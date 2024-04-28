@@ -1,4 +1,6 @@
-import { Column, CreateDateColumn, Entity, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
+
+import { User, UserBookPast } from '.';
 
 @Entity()
 export class Book {
@@ -10,6 +12,12 @@ export class Book {
 
   @Column({ default: -1 })
   score: number;
+
+  @OneToMany(() => UserBookPast, (userBook) => userBook.pastUser)
+  pastUserBooks: UserBookPast[];
+
+  @ManyToOne(() => User, (user) => user.presentUserBooks)
+  presentUser: User;
 
   @CreateDateColumn()
   created_at: Date;

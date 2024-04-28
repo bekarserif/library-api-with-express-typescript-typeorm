@@ -12,7 +12,7 @@ export class BookSeeder implements Seeder {
 
   public async run(dataSource: DataSource): Promise<void> {
     const repository = dataSource.getRepository(Book);
-    await repository.clear();
+
     await repository.insert([
       {
         name: '1984',

@@ -1,6 +1,7 @@
 import express from 'express';
 import { MessageResponse } from '../interfaces';
 import UserRouter from './users.router';
+import BookRouter from './books.router';
 
 const router = express.Router();
 
@@ -11,5 +12,6 @@ router.get<Record<string, never>, MessageResponse>('/', (req, res: express.Respo
 });
 
 router.use('/users', UserRouter);
+router.use('/books', BookRouter);
 
 export default router;

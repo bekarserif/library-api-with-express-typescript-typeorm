@@ -6,10 +6,14 @@ export class UserBookPast {
   @PrimaryGeneratedColumn('rowid')
   id: number;
 
-  @ManyToOne(() => User, (user) => user.pastUserBooks)
+  @ManyToOne(() => User, (user) => user.pastUserBooks, {
+    onDelete: 'CASCADE',
+  })
   pastUser: User;
 
-  @ManyToOne(() => Book, (book) => book.pastUserBooks)
+  @ManyToOne(() => Book, (book) => book.pastUserBooks, {
+    onDelete: 'CASCADE',
+  })
   pastBook: Book;
 
   @Column()

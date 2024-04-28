@@ -9,10 +9,14 @@ export class User {
   @Column()
   name: string;
 
-  @OneToMany(() => UserBookPast, (userBook) => userBook.pastBook)
+  @OneToMany(() => UserBookPast, (userBook) => userBook.pastBook, {
+    onDelete: 'CASCADE',
+  })
   pastUserBooks: UserBookPast[];
 
-  @OneToMany(() => Book, (book) => book.presentUser)
+  @OneToMany(() => Book, (book) => book.presentUser, {
+    onDelete: 'SET NULL',
+  })
   presentUserBooks: Book[];
 
   @CreateDateColumn()

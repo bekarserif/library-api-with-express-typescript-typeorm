@@ -12,7 +12,7 @@ export class UserSeeder implements Seeder {
 
   public async run(dataSource: DataSource): Promise<void> {
     const repository = dataSource.getRepository(User);
-
+    await repository.delete({});
     await repository.insert([
       {
         name: 'Eray Aslan',

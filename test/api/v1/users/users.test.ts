@@ -81,7 +81,7 @@ describe('POST /api/v1/users/:userId/borrow/:bookId', () => {
       .getOne();
     expect(user).toHaveProperty('id');
     expect(book).toHaveProperty('id');
-    await request(expressApp).get(`/api/v1/users/${user?.id}/borrow/${book?.id}`).set('Accept', 'application/json').expect(204);
+    await request(expressApp).post(`/api/v1/users/${user?.id}/borrow/${book?.id}`).set('Accept', 'application/json').expect(204);
   });
 
   it('responds with 404 if given user not found', async () => {
@@ -91,20 +91,85 @@ describe('POST /api/v1/users/:userId/borrow/:bookId', () => {
       .where('presentUser.id IS NULL')
       .getOne();
     expect(book).toHaveProperty('id');
-    await request(expressApp).get(`/api/v1/users/1000000/borrow/${book?.id}`).set('Accept', 'application/json').expect(404);
+    await request(expressApp).post(`/api/v1/users/1000000/borrow/${book?.id}`).set('Accept', 'application/json').expect(404);
   });
 
   it('responds with 404 if given book is not found or has a current user', async () => {
     const user = await userRepository.findOne({ where: { name: Not('') } });
 
-    await request(expressApp).get(`/api/v1/users/${user?.id}/borrow/10000000`).set('Accept', 'application/json').expect(404);
+    await request(expressApp).post(`/api/v1/users/${user?.id}/borrow/10000000`).set('Accept', 'application/json').expect(404);
   });
 
   it('responds with 422(Invalid data) if userId param is not correct type', async () => {
-    await request(expressApp).get(`/api/v1/users/test/borrow/10000000`).set('Accept', 'application/json').expect(422);
+    await request(expressApp).post(`/api/v1/users/test/borrow/10000000`).set('Accept', 'application/json').expect(422);
   });
 
   it('responds with 422(Invalid data) if bookId param is not correct type', async () => {
-    await request(expressApp).get(`/api/v1/users/1/borrow/test`).set('Accept', 'application/json').expect(422);
+    await request(expressApp).post(`/api/v1/users/1/borrow/test`).set('Accept', 'application/json').expect(422);
+  });
+});
+
+describe('POST /api/v1/users/:userId/return/:bookId', () => {
+  const userRepository = AppDataSource.getRepository(User);
+  const bookRepository = AppDataSource.getRepository(Book);
+
+  it('responds with 204 and changes books current user to given user', async () => {
+    const user = await userRepository.findOne({ where: { name: Not('') } });
+    const book = await bookRepository
+      .createQueryBuilder('book')
+      .leftJoin('book.presentUser', 'presentUser')
+      .where('presentUser.id IS NULL')
+      .getOne();
+    expect(user).toHaveProperty('id');
+    expect(book).toHaveProperty('id');
+    if (user && book)
+      await bookRepository.createQueryBuilder().update(Book).set({ presentUser: user }).where('id = :id', { id: book.id }).execute();
+
+    await request(expressApp)
+      .post(`/api/v1/users/${user?.id}/return/${book?.id}`)
+      .set('Accept', 'application/json')
+      .send({
+        score: 9,
+      })
+      .expect(204);
+  });
+
+  it('responds with 404 if given user not found', async () => {
+    const book = await bookRepository
+      .createQueryBuilder('book')
+      .leftJoin('book.presentUser', 'presentUser')
+      .where('presentUser.id IS NULL')
+      .getOne();
+    expect(book).toHaveProperty('id');
+    await request(expressApp)
+      .post(`/api/v1/users/1000000/return/${book?.id}`)
+      .set('Accept', 'application/json')
+      .send({
+        score: 9,
+      })
+      .expect(404);
+  });
+
+  it('responds with 404 if given book is not found or its user does not match with its current user', async () => {
+    const user = await userRepository.findOne({ where: { name: Not('') } });
+    await request(expressApp)
+      .post(`/api/v1/users/${user?.id}/return/10000000`)
+      .set('Accept', 'application/json')
+      .send({
+        score: 9,
+      })
+      .expect(404);
+  });
+
+  it('responds with 422(Invalid data) if userId param is not correct type', async () => {
+    await request(expressApp).post(`/api/v1/users/test/return/10000000`).set('Accept', 'application/json').expect(422);
+  });
+
+  it('responds with 422(Invalid data) if userId param is not correct type', async () => {
+    await request(expressApp).post(`/api/v1/users/test/return/10000000`).set('Accept', 'application/json').expect(422);
+  });
+
+  it('responds with 422(Invalid data) if score body does not exist', async () => {
+    await request(expressApp).post(`/api/v1/users/1/return/test`).set('Accept', 'application/json').expect(422);
   });
 });

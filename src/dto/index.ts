@@ -3,4 +3,5 @@ export * from './paramsWithId.dto';
 export * from './createBook.dto';
 export * from './userFindByIdResponse';
 export * from './messageResponse';
-export * from './borrowBookParams.dto';
+export * from './userIdBookIdParams.dto';
+export * from './returnBook.dto';

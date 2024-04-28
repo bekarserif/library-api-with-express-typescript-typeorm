@@ -61,10 +61,33 @@ export async function borrowBookForUser(
 ) {
   try {
     const { userId, bookId } = req.params;
-    const book = await BookService.findBookNoPresentUserById(+bookId);
+
     const user = await UserService.findUserById(+userId);
+    const book = await BookService.findBookNoPresentUserByBookId(+bookId);
 
     await BookService.borrowBook(user, book.id);
+
+    res.status(204).send();
+  } catch (error) {
+    if (error instanceof NotFoundError) {
+      res.status(error.status);
+    }
+    next(error);
+  }
+}
+
+export async function returnBookForUser(
+  req: Request<{ userId: string; bookId: string }, unknown, { score: number }>,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const { userId, bookId } = req.params;
+
+    const user = await UserService.findUserById(+userId);
+    const book = await BookService.findBookWithPresentUserByBookId(+bookId, +userId);
+
+    await BookService.returnBook(user, book, req.body.score);
 
     res.status(204).send();
   } catch (error) {

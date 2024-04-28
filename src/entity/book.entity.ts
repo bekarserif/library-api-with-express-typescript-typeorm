@@ -13,11 +13,15 @@ export class Book {
   @Column({ default: -1 })
   score: number;
 
-  @OneToMany(() => UserBookPast, (userBook) => userBook.pastUser)
+  @OneToMany(() => UserBookPast, (userBook) => userBook.pastUser, {
+    onDelete: 'CASCADE',
+  })
   pastUserBooks: UserBookPast[];
 
-  @ManyToOne(() => User, (user) => user.presentUserBooks)
-  presentUser: User;
+  @ManyToOne(() => User, (user) => user.presentUserBooks, {
+    onDelete: 'SET NULL',
+  })
+  presentUser: User | null;
 
   @CreateDateColumn()
   created_at: Date;

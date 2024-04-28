@@ -2,7 +2,7 @@ import env from '../env';
 import 'reflect-metadata';
 import { DataSource, DataSourceOptions } from 'typeorm';
 import { SeederOptions } from 'typeorm-extension';
-import { User, Book, UserBookPast } from '../entity';
+import { User, Book, UserBookHistory } from '../entity';
 import { BookMigration, LibraryMigration, UserMigration } from '../migration';
 import { BookSeeder, UserSeeder } from '../seeders';
 
@@ -16,7 +16,7 @@ const dataSourceOptions: DataSourceOptions & SeederOptions = {
   username: USER,
   password: PASS,
   database: DB_DATABASE,
-  entities: [User, Book, UserBookPast],
+  entities: [User, Book, UserBookHistory],
   migrations: [LibraryMigration, UserMigration, BookMigration],
   seeds: [UserSeeder, BookSeeder],
   seedTracking: true,

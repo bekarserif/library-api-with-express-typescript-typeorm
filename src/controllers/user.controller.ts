@@ -2,8 +2,8 @@ import { Request, Response, NextFunction } from 'express';
 import { User } from '../entity/user.entity';
 import * as UserService from '../services/user.service';
 import * as BookService from '../services/book.service';
-
-import { Book, UserBookPast } from '../entity';
+import * as UserBookHistoryService from '../services/userBookHistory.service';
+import { Book, UserBookHistory } from '../entity';
 import { UserFindByIdResponse } from '../dto';
 import { NotFoundError } from '../errors/globalTypes';
 
@@ -25,7 +25,7 @@ export async function findUserById(req: Request<{ id: string }, User, unknown>, 
       id: user.id,
       name: user.name,
       books: {
-        past: user.pastUserBooks.map((pastUserBook: UserBookPast) => ({
+        past: user.pastUserBooks.map((pastUserBook: UserBookHistory) => ({
           name: pastUserBook.pastBook.name,
           userScore: pastUserBook.pastScore,
         })),
@@ -83,11 +83,15 @@ export async function returnBookForUser(
 ) {
   try {
     const { userId, bookId } = req.params;
+    const { score: currentSore } = req.body;
+    await UserService.findUserById(+userId);
 
-    const user = await UserService.findUserById(+userId);
     const book = await BookService.findBookWithPresentUserByBookId(+bookId, +userId);
+    const bookHistory = await UserBookHistoryService.findBookPastByBook(book);
 
-    await BookService.returnBook(user, book, req.body.score);
+    const averageScore = await UserBookHistoryService.getAverageBookScore(bookHistory, currentSore);
+
+    await BookService.returnBook(book, averageScore);
 
     res.status(204).send();
   } catch (error) {

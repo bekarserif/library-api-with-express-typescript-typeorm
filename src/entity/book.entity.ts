@@ -1,6 +1,6 @@
 import { Column, CreateDateColumn, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
-import { User, UserBookPast } from '.';
+import { User, UserBookHistory } from '.';
 
 @Entity()
 export class Book {
@@ -13,10 +13,10 @@ export class Book {
   @Column({ default: -1 })
   score: number;
 
-  @OneToMany(() => UserBookPast, (userBook) => userBook.pastUser, {
+  @OneToMany(() => UserBookHistory, (userBook) => userBook.pastUser, {
     onDelete: 'CASCADE',
   })
-  pastUserBooks: UserBookPast[];
+  pastUserBooks: UserBookHistory[];
 
   @ManyToOne(() => User, (user) => user.presentUserBooks, {
     onDelete: 'SET NULL',

@@ -1,10 +1,9 @@
 import { AppDataSource } from '../database/dataSource';
 
-import { Book, User, UserBookPast } from '../entity';
+import { Book, User } from '../entity';
 import { BookNotFoundError } from '../errors/book.error';
 
 const bookRepository = AppDataSource.getRepository(Book);
-const userBookPastRepository = AppDataSource.getRepository(UserBookPast);
 
 export async function findAllBooks() {
   const books = await bookRepository.find({ select: { id: true, name: true } });
@@ -53,26 +52,11 @@ export async function borrowBook(user: User, bookId: number) {
   await bookRepository.createQueryBuilder().update(Book).set({ presentUser: user }).where('id = :id', { id: bookId }).execute();
 }
 
-export async function returnBook(user: User, book: Book, userScore: number) {
-  const bookHistory = await userBookPastRepository.find({
-    where: {
-      pastBook: book,
-    },
-  });
-  let totalScore = 0;
-  for (const history of bookHistory) {
-    totalScore += history.pastScore;
-  }
-  const averageScore = (totalScore + userScore) / bookHistory.length + 1;
+export async function returnBook(book: Book, averageScore: number) {
   await bookRepository
     .createQueryBuilder()
     .update(Book)
     .set({ presentUser: null, score: averageScore })
     .where('id = :id', { id: book.id })
     .execute();
-  await userBookPastRepository.insert({
-    pastScore: userScore,
-    pastBook: book,
-    pastUser: user,
-  });
 }

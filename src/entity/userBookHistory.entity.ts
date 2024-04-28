@@ -2,7 +2,7 @@ import { Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, Up
 import { User, Book } from '.';
 
 @Entity()
-export class UserBookPast {
+export class UserBookHistory {
   @PrimaryGeneratedColumn('rowid')
   id: number;
 

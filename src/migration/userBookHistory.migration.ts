@@ -1,10 +1,10 @@
 import { MigrationInterface, QueryRunner, Table, TableForeignKey } from 'typeorm';
 
-export class CreateUserBookPastTable1630000000002 implements MigrationInterface {
+export class CreateUserBookHistory implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
-        name: 'user_book_past',
+        name: 'user_book_history',
         columns: [
           { name: 'id', type: 'INTEGER', isPrimary: true, isGenerated: true, generationStrategy: 'rowid' },
           { name: 'pastUserId', type: 'INTEGER' },
@@ -16,7 +16,7 @@ export class CreateUserBookPastTable1630000000002 implements MigrationInterface 
       true
     );
 
-    await queryRunner.createForeignKeys('user_book_past', [
+    await queryRunner.createForeignKeys('user_book_history', [
       new TableForeignKey({
         columnNames: ['pastUserId'],
         referencedTableName: 'user',
@@ -33,13 +33,13 @@ export class CreateUserBookPastTable1630000000002 implements MigrationInterface 
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    const table = await queryRunner.getTable('user_book_past');
+    const table = await queryRunner.getTable('user_book_history');
     const foreignKeyUser = table?.foreignKeys.find((fk) => fk.columnNames.indexOf('pastUserId') !== -1);
     const foreignKeyBook = table?.foreignKeys.find((fk) => fk.columnNames.indexOf('pastBookId') !== -1);
     if (foreignKeyUser && foreignKeyBook) {
-      await queryRunner.dropForeignKey('user_book_past', foreignKeyUser);
-      await queryRunner.dropForeignKey('user_book_past', foreignKeyBook);
+      await queryRunner.dropForeignKey('user_book_history', foreignKeyUser);
+      await queryRunner.dropForeignKey('user_book_history', foreignKeyBook);
     }
-    await queryRunner.dropTable('user_book_past');
+    await queryRunner.dropTable('user_book_history');
   }
 }

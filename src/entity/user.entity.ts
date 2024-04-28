@@ -1,6 +1,6 @@
 import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn } from 'typeorm';
 
-import { UserBookPast, Book } from './';
+import { UserBookHistory, Book } from './';
 @Entity()
 export class User {
   @PrimaryGeneratedColumn('rowid')
@@ -9,10 +9,10 @@ export class User {
   @Column()
   name: string;
 
-  @OneToMany(() => UserBookPast, (userBook) => userBook.pastBook, {
+  @OneToMany(() => UserBookHistory, (userBook) => userBook.pastBook, {
     onDelete: 'CASCADE',
   })
-  pastUserBooks: UserBookPast[];
+  pastUserBooks: UserBookHistory[];
 
   @OneToMany(() => Book, (book) => book.presentUser, {
     onDelete: 'SET NULL',

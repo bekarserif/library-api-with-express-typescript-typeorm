@@ -2,6 +2,8 @@ import express from 'express';
 import { MessageResponse } from '../dto';
 import env from '../env';
 import api from '../routers';
+import userRouter from '../routers/users.router';
+import bookRouter from '../routers/books.router';
 import * as middlewares from '../middlewares';
 const expressApp = express();
 
@@ -13,6 +15,8 @@ expressApp.get<Record<string, never>, MessageResponse>('/', (req, res: express.R
   });
 });
 expressApp.use('/api/v1', api);
+expressApp.use('/users', userRouter);
+expressApp.use('/books', bookRouter);
 
 expressApp.use(middlewares.errorHandler);
 

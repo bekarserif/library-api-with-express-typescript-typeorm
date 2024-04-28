@@ -113,7 +113,7 @@ describe('POST /api/v1/users/:userId/return/:bookId', () => {
   const userRepository = AppDataSource.getRepository(User);
   const bookRepository = AppDataSource.getRepository(Book);
 
-  it.only('responds with 204 returns book and creates a userbookhistory', async () => {
+  it('responds with 204 returns book and creates a userbookhistory', async () => {
     const user = await userRepository.findOne({ where: { name: Not('') } });
     const book = await bookRepository
       .createQueryBuilder('book')

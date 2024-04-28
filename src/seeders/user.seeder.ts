@@ -1,6 +1,7 @@
 import { Seeder } from 'typeorm-extension';
 import { DataSource } from 'typeorm';
 import { User } from '../entity/user.entity';
+import env from '../env';
 
 export class UserSeeder implements Seeder {
   /**
@@ -11,21 +12,23 @@ export class UserSeeder implements Seeder {
   track = false;
 
   public async run(dataSource: DataSource): Promise<void> {
-    const repository = dataSource.getRepository(User);
-    await repository.delete({});
-    await repository.insert([
-      {
-        name: 'Eray Aslan',
-      },
-      {
-        name: 'Enes Faruk Meniz',
-      },
-      {
-        name: 'Kadir Mutlu',
-      },
-      {
-        name: 'Sefa Eren Şahin',
-      },
-    ]);
+    if (env.APP.NODE_ENV === 'development') {
+      const repository = dataSource.getRepository(User);
+      await repository.delete({});
+      await repository.insert([
+        {
+          name: 'Eray Aslan',
+        },
+        {
+          name: 'Enes Faruk Meniz',
+        },
+        {
+          name: 'Kadir Mutlu',
+        },
+        {
+          name: 'Sefa Eren Şahin',
+        },
+      ]);
+    }
   }
 }

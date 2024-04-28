@@ -4,7 +4,7 @@
   "description": "Simple library API utilitizing express framework, typescript, typeorm.",
   "main": "index.js",
   "scripts": {
-    "start": "ts-node src/index.ts",
+    "start": "env-cmd ts-node src/index.ts",
     "dev": "env-cmd nodemon src/index.ts",
     "build": "tsc",
     "lint": "eslint-fix src test",
@@ -12,7 +12,8 @@
     "typeorm": "typeorm-ts-node-commonjs",
     "migration": "npm run typeorm migration:run -d src/database/dataSource.ts",
     "db:create": "env-cmd ts-node ./node_modules/typeorm-extension/bin/cli.cjs db:create -d src/database/dataSource.ts --initialDatabase",
-    "db:drop": "ts-node ./node_modules/typeorm-extension/bin/cli.cjs db:drop -d src/database/dataSource.ts"
+    "db:drop": "ts-node ./node_modules/typeorm-extension/bin/cli.cjs db:drop -d src/database/dataSource.ts",
+    "seed:run": "ts-node ./node_modules/typeorm-extension/bin/cli.cjs seed:run  -d src/data-source.ts"
   },
   "keywords": [],
   "author": "",

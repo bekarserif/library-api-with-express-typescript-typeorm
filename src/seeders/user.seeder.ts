@@ -8,11 +8,11 @@ export class UserSeeder implements Seeder {
    *
    * Default: false
    */
-  track = true;
+  track = false;
 
   public async run(dataSource: DataSource): Promise<void> {
     const repository = dataSource.getRepository(User);
-    await repository.delete({});
+    await repository.clear();
     await repository.insert([
       {
         name: 'Eray Aslan',

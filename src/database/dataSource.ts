@@ -1,4 +1,5 @@
 import env from '../env';
+import 'reflect-metadata';
 import { DataSource, DataSourceOptions } from 'typeorm';
 import { SeederOptions } from 'typeorm-extension';
 import { User } from '../entity';

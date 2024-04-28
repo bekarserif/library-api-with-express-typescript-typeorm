@@ -5,7 +5,7 @@ import { User } from '../entity';
 const userRepository = AppDataSource.getRepository(User);
 
 export async function findAllUsers() {
-  const users = await userRepository.find();
+  const users = await userRepository.find({ select: { id: true, name: true } });
   return users;
 }
 

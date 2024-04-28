@@ -6,15 +6,10 @@ export class UserMigration implements MigrationInterface {
       new Table({
         name: 'user',
         columns: [
-          {
-            name: 'id',
-            type: 'uuid',
-            isPrimary: true,
-          },
-          {
-            name: 'name',
-            type: 'nvarchar',
-          },
+          { name: 'id', type: 'INTEGER', isPrimary: true, isGenerated: true, generationStrategy: 'rowid' },
+          { name: 'name', type: 'varchar', isNullable: false },
+          { name: 'created_at', type: 'datetime', default: 'CURRENT_TIMESTAMP' },
+          { name: 'updated_at', type: 'datetime', default: 'CURRENT_TIMESTAMP' },
         ],
       }),
       true

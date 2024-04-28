@@ -2,7 +2,7 @@ import request from 'supertest';
 import expressApp from '../../../../src/loaders/expressApp';
 
 import { AppDataSource } from '../../../../src/database/dataSource';
-import { User } from '../../../../src/entity';
+import { Book, User } from '../../../../src/entity';
 import { Not } from 'typeorm';
 
 describe('GET /api/v1/users', () => {
@@ -65,5 +65,46 @@ describe('GET /api/v1/users/:id', () => {
 
   it('responds with 404(Not found) if user with given id does not exist in db', async () => {
     await request(expressApp).get(`/api/v1/users/10000000`).set('Accept', 'application/json').expect(404);
+  });
+});
+
+describe('POST /api/v1/users/:userId/borrow/:bookId', () => {
+  const userRepository = AppDataSource.getRepository(User);
+  const bookRepository = AppDataSource.getRepository(Book);
+
+  it('responds with 204 and changes books current user to given user', async () => {
+    const user = await userRepository.findOne({ where: { name: Not('') } });
+    const book = await bookRepository
+      .createQueryBuilder('book')
+      .leftJoin('book.presentUser', 'presentUser')
+      .where('presentUser.id IS NULL')
+      .getOne();
+    expect(user).toHaveProperty('id');
+    expect(book).toHaveProperty('id');
+    await request(expressApp).get(`/api/v1/users/${user?.id}/borrow/${book?.id}`).set('Accept', 'application/json').expect(204);
+  });
+
+  it('responds with 404 if given user not found', async () => {
+    const book = await bookRepository
+      .createQueryBuilder('book')
+      .leftJoin('book.presentUser', 'presentUser')
+      .where('presentUser.id IS NULL')
+      .getOne();
+    expect(book).toHaveProperty('id');
+    await request(expressApp).get(`/api/v1/users/1000000/borrow/${book?.id}`).set('Accept', 'application/json').expect(404);
+  });
+
+  it('responds with 404 if given book is not found or has a current user', async () => {
+    const user = await userRepository.findOne({ where: { name: Not('') } });
+
+    await request(expressApp).get(`/api/v1/users/${user?.id}/borrow/10000000`).set('Accept', 'application/json').expect(404);
+  });
+
+  it('responds with 422(Invalid data) if userId param is not correct type', async () => {
+    await request(expressApp).get(`/api/v1/users/test/borrow/10000000`).set('Accept', 'application/json').expect(422);
+  });
+
+  it('responds with 422(Invalid data) if bookId param is not correct type', async () => {
+    await request(expressApp).get(`/api/v1/users/1/borrow/test`).set('Accept', 'application/json').expect(422);
   });
 });

@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import * as UsersController from '../controllers/user.controller';
 import { validateRequest } from '../middlewares';
-import { createUserDto, paramsWithId } from '../dto';
+import { borrowBookParams, createUserDto, paramsWithId } from '../dto';
 const router = Router();
 
 router.get('/', UsersController.findAllUsers);
@@ -11,6 +11,14 @@ router.get(
     params: paramsWithId,
   }),
   UsersController.findUserById
+);
+
+router.get(
+  '/:userId/borrow/:bookId',
+  validateRequest({
+    params: borrowBookParams,
+  }),
+  UsersController.borrowBookForUser
 );
 
 router.post(

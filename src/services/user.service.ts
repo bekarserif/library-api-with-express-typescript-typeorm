@@ -1,6 +1,7 @@
 import { AppDataSource } from '../database/dataSource';
 
 import { User } from '../entity';
+import { UserNotFoundError } from '../errors/user.error';
 
 const userRepository = AppDataSource.getRepository(User);
 
@@ -17,7 +18,9 @@ export async function findUserById(id: number) {
     .leftJoinAndSelect('user.presentUserBooks', 'presentBook')
     .where('user.id = :userId', { userId: id })
     .getOne();
-
+  if (!user) {
+    throw new UserNotFoundError(`User with id ${id} not found.`);
+  }
   return user;
 }
 

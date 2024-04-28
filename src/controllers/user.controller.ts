@@ -1,9 +1,11 @@
 import { Request, Response, NextFunction } from 'express';
 import { User } from '../entity/user.entity';
 import * as UserService from '../services/user.service';
-import { UserNotFoundError } from '../errors/user.error';
+import * as BookService from '../services/book.service';
+
 import { Book, UserBookPast } from '../entity';
 import { UserFindByIdResponse } from '../dto';
+import { NotFoundError } from '../errors/globalTypes';
 
 export async function findAllUsers(req: Request, res: Response<User[]>, next: NextFunction) {
   try {
@@ -18,10 +20,7 @@ export async function findUserById(req: Request<{ id: string }, User, unknown>, 
   try {
     const { id } = req.params;
     const user = await UserService.findUserById(+id);
-    if (!user) {
-      res.status(404);
-      throw new UserNotFoundError(`User with id ${req.params.id} not found.`);
-    }
+
     const userResponse = {
       id: user.id,
       name: user.name,
@@ -35,8 +34,12 @@ export async function findUserById(req: Request<{ id: string }, User, unknown>, 
         })),
       },
     };
+
     res.status(200).send(userResponse);
   } catch (error) {
+    if (error instanceof NotFoundError) {
+      res.status(error.status);
+    }
     next(error);
   }
 }
@@ -47,6 +50,27 @@ export async function createUser(req: Request<{ name: string }>, res: Response, 
     await UserService.createUser(name);
     res.status(201).send();
   } catch (error) {
+    next(error);
+  }
+}
+
+export async function borrowBookForUser(
+  req: Request<{ userId: string; bookId: string }, unknown, unknown>,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const { userId, bookId } = req.params;
+    const book = await BookService.findBookNoPresentUserById(+bookId);
+    const user = await UserService.findUserById(+userId);
+
+    await BookService.borrowBook(user, book.id);
+
+    res.status(204).send();
+  } catch (error) {
+    if (error instanceof NotFoundError) {
+      res.status(error.status);
+    }
     next(error);
   }
 }

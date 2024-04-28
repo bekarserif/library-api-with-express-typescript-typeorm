@@ -8,7 +8,7 @@ export class Book {
   @Column()
   name: string;
 
-  @Column()
+  @Column({ default: -1 })
   score: number;
 
   @CreateDateColumn()

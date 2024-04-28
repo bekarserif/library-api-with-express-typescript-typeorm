@@ -54,7 +54,22 @@ export async function borrowBook(user: User, bookId: number) {
 }
 
 export async function returnBook(user: User, book: Book, userScore: number) {
-  await bookRepository.createQueryBuilder().update(Book).set({ presentUser: null }).where('id = :id', { id: book.id }).execute();
+  const bookHistory = await userBookPastRepository.find({
+    where: {
+      pastBook: book,
+    },
+  });
+  let totalScore = 0;
+  for (const history of bookHistory) {
+    totalScore += history.pastScore;
+  }
+  const averageScore = (totalScore + userScore) / bookHistory.length + 1;
+  await bookRepository
+    .createQueryBuilder()
+    .update(Book)
+    .set({ presentUser: null, score: averageScore })
+    .where('id = :id', { id: book.id })
+    .execute();
   await userBookPastRepository.insert({
     pastScore: userScore,
     pastBook: book,

@@ -1,6 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import { ValidationError } from 'joi';
-import { MessageResponse, RequestValidators } from './interfaces';
+import { MessageResponse } from './dto';
+import { RequestValidators } from './interfaces';
 
 export function validateRequest(validators: RequestValidators) {
   return async (req: Request, res: Response, next: NextFunction) => {

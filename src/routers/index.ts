@@ -1,5 +1,5 @@
 import express from 'express';
-import { MessageResponse } from '../interfaces';
+import { MessageResponse } from '../dto';
 import UserRouter from './users.router';
 import BookRouter from './books.router';
 

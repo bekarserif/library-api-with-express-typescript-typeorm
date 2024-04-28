@@ -1,5 +1,5 @@
 import express from 'express';
-import { MessageResponse } from '../interfaces';
+import { MessageResponse } from '../dto';
 import env from '../env';
 import api from '../routers';
 import * as middlewares from '../middlewares';

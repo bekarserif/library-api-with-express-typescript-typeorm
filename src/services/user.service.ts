@@ -10,7 +10,14 @@ export async function findAllUsers() {
 }
 
 export async function findUserById(id: number) {
-  const user = await userRepository.findOne({ where: { id } });
+  const user = await userRepository
+    .createQueryBuilder('user')
+    .leftJoinAndSelect('user.pastUserBooks', 'pastUserBook')
+    .leftJoinAndSelect('pastUserBook.pastBook', 'pastBook')
+    .leftJoinAndSelect('user.presentUserBooks', 'presentBook')
+    .where('user.id = :userId', { userId: id })
+    .getOne();
+
   return user;
 }
 

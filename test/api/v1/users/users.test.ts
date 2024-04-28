@@ -58,6 +58,9 @@ describe('GET /api/v1/users/:id', () => {
     expect(response.body).toHaveProperty('id');
     expect(response.body.id).toBe(user?.id);
     expect(response.body).toHaveProperty('name');
+    expect(response.body).toHaveProperty('books');
+    expect(response.body.books).toHaveProperty('past');
+    expect(response.body.books).toHaveProperty('present');
   });
 
   it('responds with 404(Not found) if user with given id does not exist in db', async () => {

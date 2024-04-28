@@ -5,10 +5,15 @@ import { Book } from '../entity';
 const bookRepository = AppDataSource.getRepository(Book);
 
 export async function findAllBooks() {
-  const users = await bookRepository.find({ select: { id: true, name: true } });
-  return users;
+  const books = await bookRepository.find({ select: { id: true, name: true } });
+  return books;
 }
 
 export async function createBook(name: string) {
   await bookRepository.insert({ name });
+}
+
+export async function findBookById(id: number) {
+  const book = await bookRepository.findOne({ where: { id } });
+  return book;
 }

@@ -14,6 +14,6 @@ export async function createBook(name: string) {
 }
 
 export async function findBookById(id: number) {
-  const book = await bookRepository.findOne({ where: { id } });
+  const book = await bookRepository.findOne({ select: { id: true, name: true, score: true }, where: { id } });
   return book;
 }

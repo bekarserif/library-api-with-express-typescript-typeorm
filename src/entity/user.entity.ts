@@ -4,7 +4,7 @@ import 'reflect-metadata';
 @Entity()
 export class User {
   @PrimaryGeneratedColumn('rowid')
-  id: string;
+  id: number;
 
   @Column()
   name: string;

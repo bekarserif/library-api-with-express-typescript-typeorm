@@ -9,6 +9,11 @@ export async function findAllUsers() {
   return users;
 }
 
+export async function findUserById(id: number) {
+  const user = await userRepository.findOne({ where: { id } });
+  return user;
+}
+
 export async function createUser(name: string) {
   await userRepository.insert({ name });
 }

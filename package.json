@@ -9,7 +9,10 @@
     "build": "tsc",
     "lint": "eslint-fix src test",
     "test": "env-cmd jest",
-    "test:only": "env-cmd jest --findRelatedTests ./test/api/v1/users/users.test.ts"
+    "typeorm": "typeorm-ts-node-commonjs",
+    "migration": "npm run typeorm migration:run -d src/database/dataSource.ts",
+    "db:create": "env-cmd ts-node ./node_modules/typeorm-extension/bin/cli.cjs db:create -d src/database/dataSource.ts --initialDatabase",
+    "db:drop": "ts-node ./node_modules/typeorm-extension/bin/cli.cjs db:drop -d src/database/dataSource.ts"
   },
   "keywords": [],
   "author": "",

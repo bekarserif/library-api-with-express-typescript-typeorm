@@ -1,11 +1,11 @@
-import { Request, Response } from 'express';
+import { Request, Response, NextFunction } from 'express';
 import { Book } from '../entity';
 
-export async function findAllBooks(req: Request, res: Response<Book[] | string>) {
+export async function findAllBooks(req: Request, res: Response<Book[]>, next: NextFunction) {
   try {
     const books: Book[] = [];
     res.send(books);
   } catch (error) {
-    res.status(500).send('Internal Server Error');
+    next(error);
   }
 }

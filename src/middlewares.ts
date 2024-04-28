@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { ValidationError } from 'joi';
-import { RequestValidators } from './interfaces';
+import { MessageResponse, RequestValidators } from './interfaces';
 
 export function validateRequest(validators: RequestValidators) {
   return async (req: Request, res: Response, next: NextFunction) => {
@@ -22,4 +22,13 @@ export function validateRequest(validators: RequestValidators) {
       next(error);
     }
   };
+}
+
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
+export function errorHandler(err: Error, req: Request, res: Response<MessageResponse>, next: NextFunction) {
+  const statusCode = res.statusCode || 500;
+  res.status(statusCode);
+  res.json({
+    message: err.message,
+  });
 }
